@@ -21,10 +21,12 @@ public class AnaliticaController {
 
     @GetMapping("/overview")
     public FiltroRespuestaDTO overview(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
+            @RequestParam String from,
+            @RequestParam String to
     ) {
-        return service.getOverview(from, to);
+        LocalDateTime fromDt = LocalDateTime.parse(from.trim());
+        LocalDateTime toDt = LocalDateTime.parse(to.trim());
+        return service.getOverview(fromDt, toDt);
     }
 
     @GetMapping("/eventos")
