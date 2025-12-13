@@ -1,14 +1,15 @@
 package com.yuno.youknow.db.orm;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
+
+@Getter
+@Setter
 @Entity
 @Table(name = "eventos_pago")
 @Data
@@ -37,6 +38,9 @@ public class EventoPago {
 
     @Column(name = "payment_method", nullable = false)
     private String payment_method;
+
+    @Column(name = "currency", nullable = false)
+    private String currency;
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
