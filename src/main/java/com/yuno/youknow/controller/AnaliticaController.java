@@ -31,10 +31,12 @@ public class AnaliticaController {
 
     @GetMapping("/eventos")
     public List<eventoDTO> issues(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to
+            @RequestParam String from,
+            @RequestParam String to
     ) {
-        return service.getIssues(from, to);
+        LocalDateTime fromDt = LocalDateTime.parse(from.trim());
+        LocalDateTime toDt = LocalDateTime.parse(to.trim());
+        return service.getIssues(fromDt, toDt);
     }
 }
 
