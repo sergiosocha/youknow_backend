@@ -18,6 +18,7 @@ public class InputController {
     public InputController(InputService service, TransactionService transactionService) {
         this.service = service;
         this.transactionService = transactionService;
+
     }
 
     @PostMapping("/events")

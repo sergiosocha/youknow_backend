@@ -23,6 +23,7 @@ public class AnaliticaController {
     public FiltroRespuestaDTO overview(
             @RequestParam String from,
             @RequestParam String to
+
     ) {
         LocalDateTime fromDt = LocalDateTime.parse(from.trim());
         LocalDateTime toDt = LocalDateTime.parse(to.trim());

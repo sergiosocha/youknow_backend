@@ -12,6 +12,7 @@ public class TransactionEventListener {
 
     private final SimpMessagingTemplate ws;
 
+
     @EventListener
     public void onTransactionCreated(TransactionCreatedEvent event) {
         ws.convertAndSend(
