@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class EventoPago {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "event_id", nullable = false)
     private String eventId;
 
@@ -67,4 +68,10 @@ public class EventoPago {
 
     @Column(name = "suggested_action_type")
     private String suggestedActionType;
+
+
+    @PrePersist
+    void onCreate() {
+        this.timestamp = LocalDateTime.now();
+    }
 }
