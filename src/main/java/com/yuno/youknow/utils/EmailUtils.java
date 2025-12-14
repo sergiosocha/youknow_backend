@@ -14,7 +14,7 @@ public class EmailUtils {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("help.tickets.sabanus@gmail.com");
-            message.setTo("julian.d.alvarado23@gmail.com"); // destinatario real
+            message.setTo(email); // destinatario real
             message.setSubject(subject);
             message.setText(body);
             mailSender.send(message);

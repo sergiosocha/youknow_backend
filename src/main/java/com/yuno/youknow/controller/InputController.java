@@ -40,7 +40,7 @@ public class InputController {
         alertaFinalService.create(events);
         emailUtils.sendEmail(
                 "ALERTA",
-                "ALGO SE JODIOOO",
+                events.merchantName() + " presentó un error con id "+ events.incidentTag() + " el día " + events.lastSeen() + " un error que es causado por el " + events.category(),
                 email
         );
     }
