@@ -19,7 +19,7 @@ public class WebSocketConfig
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*");
+                .setAllowedOrigins("*");
     }
 }
 
