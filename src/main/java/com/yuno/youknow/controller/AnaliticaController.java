@@ -3,7 +3,6 @@ package com.yuno.youknow.controller;
 import com.yuno.youknow.controller.dto.eventoDTO;
 import com.yuno.youknow.controller.dto.FiltroRespuestaDTO;
 import com.yuno.youknow.logic.AnaliticaService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -24,8 +23,8 @@ public class AnaliticaController {
             @RequestParam String from,
             @RequestParam String to
     ) {
-        LocalDateTime fromDt = LocalDateTime.parse(from.trim());
-        LocalDateTime toDt = LocalDateTime.parse(to.trim());
+        LocalDateTime fromDt = parseDt(from);
+        LocalDateTime toDt = parseDt(to);
         return service.getOverview(fromDt, toDt);
     }
 
@@ -34,9 +33,14 @@ public class AnaliticaController {
             @RequestParam String from,
             @RequestParam String to
     ) {
-        LocalDateTime fromDt = LocalDateTime.parse(from.trim());
-        LocalDateTime toDt = LocalDateTime.parse(to.trim());
+        LocalDateTime fromDt = parseDt(from);
+        LocalDateTime toDt = parseDt(to);
         return service.getIssues(fromDt, toDt);
     }
-}
 
+    private LocalDateTime parseDt(String raw) {
+        if (raw == null) throw new IllegalArgumentException("datetime param is null");
+        String cleaned = raw.trim().replace("\n", "").replace("\r", "");
+        return LocalDateTime.parse(cleaned);
+    }
+}

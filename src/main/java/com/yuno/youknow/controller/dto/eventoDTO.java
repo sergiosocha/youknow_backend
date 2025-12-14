@@ -2,6 +2,7 @@ package com.yuno.youknow.controller.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public record eventoDTO(
         String incidentTag,
@@ -24,10 +25,11 @@ public record eventoDTO(
         Double avgLatencyMs,
 
         String mainErrorType,
+        String mainErrorCategory,
+        Map<String, Long> errorCategoryCounts,
+
         BigDecimal failedAmount,
 
         String title,
         String description
-
-) {
-}
+) {}

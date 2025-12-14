@@ -14,6 +14,9 @@ import java.util.stream.Collectors;
 @Service
 public class AnaliticaService {
 
+    private static final String STATUS_APPROVED = "APPROVED";
+    private static final String STATUS_FAILED = "FAILED";
+
     private final EventoPagoRepository repo;
 
     public AnaliticaService(EventoPagoRepository repo) {
@@ -24,30 +27,37 @@ public class AnaliticaService {
         List<EventoPago> events = repo.findByTimestampBetween(from, to);
 
         long total = events.size();
-        long success = countStatus(events, "success");
-        long failed = countStatus(events, "failed");
+        long approved = countStatus(events, STATUS_APPROVED);
+        long failed = countStatus(events, STATUS_FAILED);
 
-        double conversion = total == 0 ? 0.0 : (double) success / total;
+        double conversion = total == 0 ? 0.0 : (double) approved / total;
         double errorRate = total == 0 ? 0.0 : (double) failed / total;
 
         Double avgLatency = avgLatency(events);
 
         BigDecimal failedAmount = sumAmount(
-                events.stream().filter(e -> isStatus(e, "failed")).toList()
+                events.stream().filter(e -> isStatus(e, STATUS_FAILED)).toList()
         );
 
+
+        Map<String, Long> errorCategoryCounts = events.stream()
+                .map(EventoPago::getErrorCategory)
+                .filter(Objects::nonNull)
+                .map(Object::toString)
+                .collect(Collectors.groupingBy(x -> x, Collectors.counting()));
+
         List<eventoDTO> issues = buildIssues(events);
-        // para overview muestro pocos (hackatón)
         List<eventoDTO> topIssues = issues.stream().limit(5).toList();
 
         return new FiltroRespuestaDTO(
                 from, to,
-                total, success, failed,
+                total, approved, failed,
                 conversion, errorRate,
                 avgLatency,
                 failedAmount,
                 topIssues.size(),
-                topIssues
+                topIssues,
+                errorCategoryCounts
         );
     }
 
@@ -56,7 +66,8 @@ public class AnaliticaService {
     }
 
     private List<eventoDTO> buildIssues(List<EventoPago> events) {
-       //Agrupamos si tenemos algun Incidente si la transaccion se realizó bien, no hay porque agruparla
+
+
         Map<String, List<EventoPago>> groups = events.stream()
                 .filter(e -> e.getIncidentTag() != null && !e.getIncidentTag().isBlank())
                 .collect(Collectors.groupingBy(this::groupKey));
@@ -70,33 +81,49 @@ public class AnaliticaService {
             EventoPago last = group.get(group.size() - 1);
 
             long total = group.size();
-            long failed = countStatus(group, "failed");
+            long failed = countStatus(group, STATUS_FAILED);
             double errRate = total == 0 ? 0.0 : (double) failed / total;
 
             Double avgLat = avgLatency(group);
 
+
             String mainError = mostCommon(group.stream()
+                    .filter(e -> isStatus(e, STATUS_FAILED))
                     .map(EventoPago::getErrorType)
                     .filter(Objects::nonNull)
                     .toList());
 
-            BigDecimal failedAmount = sumAmount(
-                    group.stream().filter(e -> isStatus(e, "failed")).toList()
-            );
 
+            String mainErrorCategory = mostCommon(group.stream()
+                    .filter(e -> isStatus(e, STATUS_FAILED))
+                    .map(EventoPago::getErrorCategory)
+                    .filter(Objects::nonNull)
+                    .map(Object::toString)
+                    .toList());
+
+            Map<String, Long> categoryCounts = group.stream()
+                    .map(EventoPago::getErrorCategory)
+                    .filter(Objects::nonNull)
+                    .map(Object::toString)
+                    .collect(Collectors.groupingBy(x -> x, Collectors.counting()));
+
+            BigDecimal failedAmount = sumAmount(
+                    group.stream().filter(e -> isStatus(e, STATUS_FAILED)).toList()
+            );
 
             String title = String.format("%s %s (%s)",
                     safe(first.getProvider()), safe(first.getCountryCode()), safe(first.getPayment_method())
             );
 
             String description = String.format(
-                    "%s tiene %d eventos con el tag '%s'. Fallidos: %d (%.0f%%). Error principal: %s. Acción sugerida: %s.",
+                    "%s tiene %d eventos con el tag '%s'. Fallidos: %d (%.0f%%). Error principal: %s (%s). Acción sugerida: %s.",
                     safe(first.getMerchantName()),
                     total,
                     safe(first.getIncidentTag()),
                     failed,
                     errRate * 100,
                     mainError == null ? "N/A" : mainError,
+                    mainErrorCategory == null ? "N/A" : mainErrorCategory,
                     safe(first.getSuggestedActionType())
             );
 
@@ -121,6 +148,9 @@ public class AnaliticaService {
                     avgLat,
 
                     mainError,
+                    mainErrorCategory,
+                    categoryCounts,
+
                     failedAmount,
 
                     title,
@@ -128,7 +158,7 @@ public class AnaliticaService {
             ));
         }
 
-        //La idea es organizar según la prioridad o lo critico del incidente
+
         issues.sort(Comparator
                 .comparing((eventoDTO i) -> severityRank(i.impactLevel()))
                 .reversed()
@@ -138,7 +168,6 @@ public class AnaliticaService {
     }
 
     private String groupKey(EventoPago e) {
-        // key por entidad + tag
         return String.join("|",
                 safe(e.getIncidentTag()),
                 safe(e.getMerchantId()),
