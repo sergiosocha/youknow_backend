@@ -2,7 +2,7 @@ package com.yuno.youknow.controller;
 
 import com.yuno.youknow.controller.dto.MerchantDto;
 import com.yuno.youknow.db.orm.Merchant;
-import com.yuno.youknow.logic.MerchantService;
+import com.yuno.youknow.service.MerchantService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

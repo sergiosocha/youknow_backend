@@ -1,4 +1,4 @@
-package com.yuno.youknow.logic;
+package com.yuno.youknow.service;
 
 import com.yuno.youknow.controller.dto.eventoDTO;
 import com.yuno.youknow.controller.dto.FiltroRespuestaDTO;

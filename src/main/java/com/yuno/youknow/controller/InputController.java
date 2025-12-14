@@ -2,12 +2,9 @@ package com.yuno.youknow.controller;
 
 import com.yuno.youknow.controller.dto.EventoPagoCreateDto;
 import com.yuno.youknow.db.orm.EventoPago;
-import com.yuno.youknow.logic.InputService;
-import com.yuno.youknow.logic.TransactionService;
+import com.yuno.youknow.service.InputService;
+import com.yuno.youknow.service.TransactionService;
 import com.yuno.youknow.utils.EmailUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
