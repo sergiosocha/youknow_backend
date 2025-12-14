@@ -51,6 +51,11 @@ public class EventoPago {
     @Column(name = "error_type")
     private String errorType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "error_category")
+    private ErrorCategory errorCategory;
+
+
     @Column(name = "latency_ms")
     private Integer latencyMs;
 

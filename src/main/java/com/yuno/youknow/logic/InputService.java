@@ -1,6 +1,7 @@
 package com.yuno.youknow.logic;
 
 import com.yuno.youknow.controller.dto.EventoPagoCreateDto;
+import com.yuno.youknow.db.orm.ErrorCategory;
 import com.yuno.youknow.db.orm.EventoPago;
 import com.yuno.youknow.db.repository.EventoPagoRepository;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,42 @@ public class InputService {
         repo.saveAll(entities);
     }
 
+    private ErrorCategory resolveCategory(String status, String errorType) {
+
+        if (status != null && status.equalsIgnoreCase("APPROVED")) {
+            return null;
+        }
+
+
+        if (errorType == null || errorType.isBlank()) {
+            return null;
+        }
+
+        return switch (errorType) {
+
+            case "MISSING_REQUIRED_FIELDS",
+                 "INVALID_AMOUNT",
+                 "INVALID_BENEFICIARY_DATA",
+                 "INVALID_BANK_ACCOUNT",
+                 "INSUFFICIENT_BALANCE",
+                 "ACCOUNT_CLOSED",
+                 "ACCOUNT_BLOCKED",
+                 "AUTHORIZATION_REQUIRED",
+                 "AUTHORIZATION_EXPIRED"
+                    -> ErrorCategory.USER;
+
+
+            case "INVALID_CURRENCY",
+                 "PAYOUT_NOT_ENABLED",
+                 "PAYOUT_LIMIT_EXCEEDED",
+                 "DAILY_PAYOUT_LIMIT"
+                    -> ErrorCategory.MERCHANT;
+
+
+            default -> ErrorCategory.PROVIDER;
+        };
+    }
+
     private EventoPago toEntity(EventoPagoCreateDto d) {
         EventoPago e = new EventoPago(); // usa NoArgsConstructor
 
@@ -38,7 +75,13 @@ public class InputService {
         e.setPayment_method(d.paymentMethod());
         e.setStatus(d.status());
 
-        e.setErrorType(d.errorType());
+        if (d.status() != null && d.status().equalsIgnoreCase("APPROVED")) {
+            e.setErrorType(null);
+            e.setErrorCategory(null);
+        } else {
+            e.setErrorType(d.errorType());
+            e.setErrorCategory(resolveCategory(d.status(), d.errorType()));
+        }
         e.setLatencyMs(d.latencyMs());
 
         e.setAmount(d.amount());
