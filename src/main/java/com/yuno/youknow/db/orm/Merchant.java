@@ -35,4 +35,8 @@ public class Merchant {
     )
     @JsonManagedReference
     private List<MerchantProviderConfig> providers = new ArrayList<>();
+
+    @Column(name = "security_score", nullable = false)
+    private String securityScore;
+
 }

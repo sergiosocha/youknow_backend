@@ -2,7 +2,7 @@ package com.yuno.youknow.controller;
 
 import com.yuno.youknow.controller.dto.eventoDTO;
 import com.yuno.youknow.controller.dto.FiltroRespuestaDTO;
-import com.yuno.youknow.logic.AnaliticaService;
+import com.yuno.youknow.service.AnaliticaService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;

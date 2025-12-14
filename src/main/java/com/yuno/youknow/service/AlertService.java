@@ -1,12 +1,10 @@
-package com.yuno.youknow.logic;
+package com.yuno.youknow.service;
 
 
 import com.yuno.youknow.db.orm.EventoPago;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-
-import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package com.yuno.youknow.logic;
+package com.yuno.youknow.service;
 
 import com.yuno.youknow.controller.dto.MerchantDto;
 import com.yuno.youknow.controller.dto.MerchantProviderDto;
