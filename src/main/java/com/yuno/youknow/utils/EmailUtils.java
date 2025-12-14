@@ -10,7 +10,7 @@ public class EmailUtils {
 
     @Autowired
     private JavaMailSender mailSender;
-    public  void sendEmail(String subject, String body) {
+    public  void sendEmail(String subject, String body, String email) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("help.tickets.sabanus@gmail.com");

@@ -30,7 +30,14 @@ public class AlertaService {
                         r.getIncidentTag(),
                         r.getCategory(),
                         r.getLastSeen()
+
                 ))
                 .toList();
     }
+
+    public void saveAlert(AlertaDTO alertaDTO){
+
+    }
+
+
 }

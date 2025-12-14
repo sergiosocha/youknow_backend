@@ -1,5 +1,6 @@
 package com.yuno.youknow.db.orm;
 
+import com.yuno.youknow.controller.dto.AlertaDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -69,6 +70,10 @@ public class EventoPago {
     @Column(name = "suggested_action_type")
     private String suggestedActionType;
 
+
+    public EventoPago(AlertaDTO alertaDTO){
+
+    }
 
     @PrePersist
     void onCreate() {

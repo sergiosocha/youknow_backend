@@ -24,6 +24,7 @@ public class InputService {
                 .map(this::toEntity)
                 .toList();
 
+
         repo.saveAll(entities);
     }
 

@@ -19,7 +19,7 @@ public class TransactionService {
     @Transactional
     public EventoPago create(EventoPago tx) {
         EventoPago saved = repository.save(tx);
-        alertService.evaluate(saved);
+        //alertService.evaluate(saved);
         return saved;
     }
 
